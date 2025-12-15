@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><title>Interests</title></head>
+<body>
+<h2>Choose Your Game Interests</h2>
+
+<h3>Game Types</h3>
+<label><input type="checkbox" value="Arcade"> Arcade</label>
+<label><input type="checkbox" value="Puzzle"> Puzzle</label>
+<label><input type="checkbox" value="Strategy"> Strategy</label>
+<label><input type="checkbox" value="Card"> Card</label>
+<label><input type="checkbox" value="Multiplayer"> Multiplayer</label>
+
+<h3>Games you want</h3>
+<input type="text" id="gamesInput" placeholder="Eg: Ludo, Chess">
+
+<h3>Suggestions 💡</h3>
+<textarea id="suggestion" placeholder="Tell us your ideas"></textarea>
+
+<button onclick="saveInterests()">Continue</button>
+
+<script>
+function saveInterests(){
+  const types=[];
+  document.querySelectorAll("input[type=checkbox]:checked").forEach(cb=>types.push(cb.value));
+  const games=document.getElementById("gamesInput").value;
+  const suggestion=document.getElementById("suggestion").value;
+  localStorage.setItem("interests",JSON.stringify({types,games,suggestion}));
+  window.location.href="index.html";
+}
+</script>
+</body>
+</html>

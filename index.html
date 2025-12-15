@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Game Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h3>Welcome, <span id="userName"></span></h3>
+<p>Coins: <span id="coinBalance"></span> | Rank: <span id="rank"></span></p>
+
+<h2>⭐ Recommended Games</h2>
+<div id="recommended"></div>
+
+<h2>🔥 Trending Games</h2>
+<div id="trending"></div>
+
+<h2>📢 Notices</h2>
+<ul id="noticeBoard"></ul>
+
+<div class="games">
+  <a href="#" onclick="openGame('Crash Game','games/crash.html','games/tutorials/crash.mp4')">🚀 Crash Game</a>
+  <a href="#" onclick="openGame('Dice Roll','games/dice.html','games/tutorials/dice.mp4')">🎲 Dice Roll</a>
+  <a href="#" onclick="openGame('Tic Tac Toe','games/tictactoe.html','games/tutorials/tictactoe.mp4')">❌⭕ Tic Tac Toe</a>
+  <!-- add all other games similarly -->
+</div>
+
+<div id="tutorialModal" style="display:none;">
+  <h2 id="tutorialTitle"></h2>
+  <video id="tutorialVideo" width="400" controls></video>
+  <button id="startGame">Start Game</button>
+  <button id="skipTutorial">Skip Tutorial</button>
+</div>
+
+<p id="adStatus"></p>
+<button onclick="watchAd()">Watch Ad +200 Coins</button>
+
+<script src="auth.js"></script>
+<script src="wallet.js"></script>
+<script src="tutorial.js"></script>
+
+<script>
+// Load user info
+const user=JSON.parse(localStorage.getItem("user"));
+document.getElementById("userName").innerText=user.username;
+document.getElementById("coinBalance").innerText=localStorage.getItem("coins");
+document.getElementById("rank").innerText=getRank();
+
+// Recommended games
+const interests=JSON.parse(localStorage.getItem("interests"));
+const allGames=[
+  {name:"Crash Game",type:"Arcade",link:"games/crash.html"},
+  {name:"Dice Roll",type:"Arcade",link:"games/dice.html"},
+  {name:"Sudoku",type:"Puzzle",link:"games/sudoku.html"},
+  {name:"Tic Tac Toe",type:"Strategy",link:"games/tictactoe.html"},
+  {name:"Quiz Battle",type:"Multiplayer",link:"games/quizbattle.html"}
+];
+const recDiv=document.getElementById("recommended");
+if(interests){
+  allGames.filter(g=>interests.types.includes(g.type)).slice(0,4)
+    .forEach(game=>{
+      const a=document.createElement("a"); a.href=game.link; a.innerText="🎮 "+game.name;
+      recDiv.appendChild(a);
+    });
+}
+
+// Trending
+if(!localStorage.getItem("gamePlays")) localStorage.setItem("gamePlays",JSON.stringify({}));
+const plays=JSON.parse(localStorage.getItem("gamePlays"));
+const trendingDiv=document.getElementById("trending");
+Object.entries(plays).sort((a,b)=>b[1]-a[1]).slice(0,3).forEach(([name])=>{
+  const a=document.createElement("a"); a.href="#"; a.innerText="🔥 "+name;
+  trendingDiv.appendChild(a);
+});
+
+// Notices
+if(!localStorage.getItem("notices")) localStorage.setItem("notices",JSON.stringify([
+  "🚀 New Crash Game added!","🎁 Daily bonus +1000 coins","👥 Friends & Challenges coming soon"
+]));
+const notices=JSON.parse(localStorage.getItem("notices"));
+const board=document.getElementById("noticeBoard");
+notices.forEach(note=>{ const li=document.createElement("li"); li.innerText=note; board.appendChild(li); });
+
+// Game tutorial logic
+function openGame(gameName, gameLink, tutorialVideo){
+  const tutorialData=JSON.parse(localStorage.getItem("tutorial_"+gameName));
+  if(!tutorialData) showTutorialModal(gameName,gameLink,tutorialVideo,false);
+  else showTutorialModal(gameName,gameLink,tutorialVideo,true);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<h2>Crash Game</h2>
+<p>Demo game screen here...</p>
+<button onclick="playGame()">Play</button>
+
+<script>
+function playGame(){
+  // Simulate play
+  let plays=JSON.parse(localStorage.getItem("gamePlays")||"{}");
+  plays["Crash Game"]=(plays["Crash Game"]||0)+1;
+  localStorage.setItem("gamePlays",JSON.stringify(plays));
+  alert("Game finished! + coins awarded");
+  addCoins(500);
+}
+</script>
